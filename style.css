@@ -1,0 +1,24 @@
+body { font-family: 'Cairo', sans-serif; background: #0f0c29; color: white; margin: 0; }
+.screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.auth-card { background: white; padding: 40px; border-radius: 25px; color: #333; text-align: center; width: 320px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.logo { color: #ff4d4d; font-size: 45px; margin-bottom: 10px; }
+
+.social-btn {
+    width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-weight: bold; font-family: 'Cairo'; transition: 0.3s;
+}
+.google { background: white; color: #555; }
+.facebook { background: #1877f2; color: white; border: none; }
+.social-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+header { background: rgba(255, 77, 77, 0.9); width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; backdrop-filter: blur(5px); }
+.user-profile { display: flex; align-items: center; gap: 10px; }
+#user-photo { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; }
+.chat-area { flex: 1; width: 100%; padding: 80px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+.msg { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.6; }
+.user { align-self: flex-end; background: #ff4d4d; border-bottom-right-radius: 2px; }
+.ai { align-self: flex-start; background: #2d3436; border-bottom-left-radius: 2px; border: 1px solid rgba(255,255,255,0.1); }
+.input-bar { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #1a1a2e; display: flex; gap: 10px; }
+input { flex: 1; background: #0f0c29; border: 1px solid #333; color: white; padding: 12px; border-radius: 25px; outline: none; }
+.send-btn { background: #ff4d4d; border: none; width: 50px; border-radius: 50%; color: white; cursor: pointer; }

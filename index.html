@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VROOM AI | Pro Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="auth-screen" class="screen">
+        <div class="auth-card">
+            <h1 class="logo">VROOM 🏎️</h1>
+            <p>سجل دخولك لتبدأ تشخيص أعطال سيارتك</p>
+            
+            <button class="social-btn google" onclick="loginWithGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
+                تسجيل الدخول عبر Google
+            </button>
+
+            <button class="social-btn facebook" onclick="loginWithFacebook()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" width="20">
+                تسجيل الدخول عبر Facebook
+            </button>
+        </div>
+    </div>
+
+    <div id="main-screen" class="screen" style="display:none;">
+        <header>
+            <div class="user-profile">
+                <img id="user-photo" src="" alt="User">
+                <span id="display-name"></span>
+            </div>
+            <button onclick="logout()" class="mini-btn">خروج</button>
+        </header>
+
+        <div class="chat-area" id="chat-box"></div>
+
+        <div class="input-bar">
+            <input type="text" id="user-in" placeholder="اسأل VROOM الميكانيكي...">
+            <button class="send-btn" onclick="sendMessage()">🚀</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
