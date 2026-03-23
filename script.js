@@ -1,19 +1,15 @@
-const API_KEY = "AIzaSyBY6i6TlzxRhmORJ28CumtqHyWSn70fnR4";
+// مفتاحك الجديد والمفعل يا يعقوب
+const API_KEY = "AIzaSyCW1Y4DZIEdlRFfVzUz-WpiDfQu68M0Atg";
 
-// محاكاة تسجيل الدخول (للعرض والعمل الفوري)
+// نظام الدخول (المحاكاة)
 function loginWithGoogle() {
-    // في النسخة الاحترافية نستخدم Firebase Auth هنا
     const userName = prompt("أدخل اسمك للمتابعة عبر Google:");
-    if(userName) {
-        saveUser(userName, "https://cdn-icons-png.flaticon.com/512/300/300221.png");
-    }
+    if(userName) saveUser(userName, "https://cdn-icons-png.flaticon.com/512/300/300221.png");
 }
 
 function loginWithFacebook() {
     const userName = prompt("أدخل اسمك للمتابعة عبر Facebook:");
-    if(userName) {
-        saveUser(userName, "https://cdn-icons-png.flaticon.com/512/124/124010.png");
-    }
+    if(userName) saveUser(userName, "https://cdn-icons-png.flaticon.com/512/124/124010.png");
 }
 
 function saveUser(name, photo) {
@@ -21,9 +17,17 @@ function saveUser(name, photo) {
     document.getElementById('main-screen').style.display = 'flex';
     document.getElementById('display-name').innerText = name;
     document.getElementById('user-photo').src = photo;
-    addMsg(`أهلاً بك يا ${name}! أنا VROOM، مساعدك الميكانيكي. كيف حال سيارتك اليوم؟`, 'ai');
+    addMsg(`مرحباً يا ${name}! أنا VROOM، ميكانيكي الجلفة الذكي. واش راهي سيارتك اليوم؟`, 'ai');
 }
 
+// تشغيل الإرسال عند الضغط على Enter
+document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// دالة إرسال الرسالة للذكاء الاصطناعي
 async function sendMessage() {
     const input = document.getElementById('user-in');
     const text = input.value.trim();
@@ -31,25 +35,38 @@ async function sendMessage() {
 
     addMsg(text, 'user');
     input.value = "";
-    const loading = addMsg("VROOM يحلل العطل... ⚡", 'ai');
+    const loading = addMsg("VROOM يحلل المشكلة... ⚡", 'ai');
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+        // الرابط الرسمي المستقر v1
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+        const response = await fetch(url, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: "أنت ميكانيكي خبير من الجزائر، أجب بذكاء واحترافية: " + text }] }]
+                contents: [{
+                    parts: [{ 
+                        text: "أنت ميكانيكي خبير من ولاية الجلفة، الجزائر. أجب بلهجة تقنية جزائرية مفهومة واحترافية. ساعد المستخدم في حل مشكلة سيارته: " + text 
+                    }]
+                }]
             })
         });
 
         const data = await response.json();
-        if(data.error) {
-            loading.innerText = "خطأ في المفتاح! تأكد من تفعيله في Google AI Studio.";
-        } else {
+
+        if (data.error) {
+            loading.innerText = "خطأ تقني: " + data.error.message;
+            console.error("API Error:", data.error);
+        } else if (data.candidates && data.candidates[0].content) {
             loading.innerText = data.candidates[0].content.parts[0].text;
+        } else {
+            loading.innerText = "اعتذر، لم أتمكن من معالجة الطلب. حاول صياغة السؤال بشكل مختلف.";
         }
+
     } catch (e) {
-        loading.innerText = "حدث خطأ في الاتصال. يرجى المحاولة لاحقاً.";
+        loading.innerText = "مشكلة في الاتصال. تأكد أن الموقع مرفوع على Netlify.";
+        console.error("Fetch Error:", e);
     }
 }
 
@@ -63,6 +80,4 @@ function addMsg(t, c) {
     return d;
 }
 
-function logout() {
-    location.reload();
-}
+function logout() { location.reload(); }
