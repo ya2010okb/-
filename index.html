@@ -1,89 +1,87 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="mainHtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VROOM AI | ميكانيكي الجلفة</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0b0b0d; color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; }
-        #auth-screen { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 100; }
-        .auth-card { background: #151515; padding: 40px; border-radius: 20px; text-align: center; border: 2px solid #e63946; }
-        #main-screen { display: none; flex-direction: column; height: 100vh; width: 100%; max-width: 600px; margin: 0 auto; background: #121214; }
-        header { padding: 15px; background: #1a1a1c; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
-        #chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 18px; border-radius: 15px; max-width: 85%; line-height: 1.6; }
-        .user { align-self: flex-end; background: #e63946; }
-        .ai { align-self: flex-start; background: #252529; border: 1px solid #333; }
-        .action-bar { padding: 15px; background: #1a1a1c; display: flex; gap: 10px; }
-        input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: white; outline: none; }
-        .btn { background: #e63946; border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
-    </style>
+    <title>Yak Zone Exchange | Pro</title>
+    
+    <link rel="icon" type="image/png" href="Yakob.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-theme">
 
-    <div id="auth-screen">
-        <div class="auth-card">
-            <h1 style="color:#e63946; font-size: 40px;">VROOM 🏎️</h1>
-            <p style="margin: 15px 0 25px;">مرحباً بك في Yak Zone</p>
-            <button onclick="startApp()" style="background:#e63946; color:white; border:none; padding:15px 30px; border-radius:10px; cursor:pointer;">دخول سريع</button>
+<div class="app-container">
+    <div class="header">
+        <div class="logo">Yak<span style="color: var(--primary);"> Zone</span></div>
+        <button class="settings-btn" onclick="toggleSettings()" aria-label="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+
+    <div class="main-card">
+        <div class="input-box">
+            <label id="lblAmount">المبلغ</label>
+            <input type="number" id="amount" value="1000" oninput="convert()" inputmode="decimal">
+        </div>
+
+        <div class="currency-grid">
+            <div class="select-group">
+                <label id="lblFrom">من</label>
+                <select id="fromCurrency" onchange="convert()"></select>
+            </div>
+
+            <div class="swap-container">
+                <button class="swap-button" onclick="swapCurrencies()" title="تبديل العملات">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+            </div>
+
+            <div class="select-group">
+                <label id="lblTo">إلى</label>
+                <select id="toCurrency" onchange="convert()"></select>
+            </div>
+        </div>
+
+        <div class="result-area">
+            <p id="rateInfo">---</p>
+            <h2 id="finalResult" title="اضغط للنسخ">0.00</h2>
+            <small id="copyHint" style="opacity: 0.5; font-size: 10px; display: block; margin-top: 5px; color: var(--primary);">اضغط على المبلغ للنسخ السريع</small>
         </div>
     </div>
 
-    <div id="main-screen">
-        <header>
-            <span style="font-weight: bold; color: #e63946;">👤 ميكانيكي الجلفة الذكي</span>
-            <button onclick="location.reload()" style="background:none; border:none; color:#888; cursor:pointer;">خروج</button>
-        </header>
-        <div id="chat-box"></div>
-        <div class="action-bar">
-            <input type="text" id="user-in" placeholder="اسأل VROOM الميكانيكي...">
-            <button class="btn" onclick="sendMessage()">🚀</button>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h3 id="setTile">الإعدادات</h3>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
+            
+            <div class="set-item">
+                <span id="setLang">اللغة:</span>
+                <select id="langSelect" onchange="changeLanguage()">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+            <div class="set-item">
+    <span id="setCustomColor">لون التطبيق:</span>
+    <input type="color" id="colorPicker" value="#a855f7" onchange="updateAppColor(this.value)" style="width: 50px; height: 30px; padding: 0; border-radius: 5px; cursor: pointer;">
+</div>
+
+            <div class="set-item">
+                <span id="setTheme">المظهر:</span>
+                <button class="theme-btn" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i> / <i class="fas fa-sun"></i>
+                </button>
+            </div>
+
+            <button class="close-btn" onclick="toggleSettings()">إغلاق</button>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        const API_KEY = "AIzaSyCW1Y4DZIEdlRFfVzUz-WpiDfQu68M0Atg";
-        const genAI = new GoogleGenerativeAI(API_KEY);
-
-        window.startApp = function() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('main-screen').style.display = 'flex';
-            addMsg("يا هلا بيك في VROOM! أنا ميكانيكي خبير من الجلفة، واش راه صاري في سيارتك؟", "ai");
-        }
-
-        window.sendMessage = async function() {
-            const input = document.getElementById('user-in');
-            const text = input.value.trim();
-            if (!text) return;
-
-            addMsg(text, "user");
-            input.value = "";
-            const loading = addMsg("VROOM يحلل العطل... ⚡", "ai");
-
-            try {
-                // استخدام موديل 1.5-flash كخيار أساسي ومستقر
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const result = await model.generateContent("أجب بلهجة جزائرية تقنية من الجلفة: " + text);
-                const response = await result.response;
-                loading.innerText = response.text();
-            } catch (e) {
-                loading.innerText = "اعتذر، كاين مشكلة في مفتاح الـ API أو الحظر الأمني. تأكد أن المفتاح مفعل في Google Cloud.";
-                console.error(e);
-            }
-        }
-
-        function addMsg(t, c) {
-            const chatBox = document.getElementById('chat-box');
-            const div = document.createElement('div');
-            div.className = `msg ${c}`;
-            div.innerText = t;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return div;
-        }
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
