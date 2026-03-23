@@ -3,46 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VROOM AI | Pro Login</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>VROOM AI | Yak Zone</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0b0b0d; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        #auth-screen { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 100; }
+        .auth-card { background: #151515; padding: 40px; border-radius: 20px; text-align: center; border: 2px solid #e63946; }
+        #main-screen { display: none; flex-direction: column; height: 100vh; width: 100%; max-width: 600px; margin: 0 auto; background: #121214; }
+        header { padding: 15px; background: #1a1a1c; border-bottom: 1px solid #333; display: flex; justify-content: space-between; }
+        #chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 15px; max-width: 85%; line-height: 1.6; }
+        .user { align-self: flex-end; background: #e63946; border-bottom-right-radius: 2px; }
+        .ai { align-self: flex-start; background: #252529; border: 1px solid #333; border-bottom-left-radius: 2px; }
+        .action-bar { padding: 15px; background: #1a1a1c; display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #000; color: white; outline: none; }
+        .btn { background: #e63946; border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+    </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="screen">
+    <div id="auth-screen">
         <div class="auth-card">
-            <h1 class="logo">VROOM 🏎️</h1>
-            <p>سجل دخولك لتبدأ تشخيص أعطال سيارتك</p>
-            
-            <button class="social-btn google" onclick="loginWithGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
-                تسجيل الدخول عبر Google
-            </button>
-
-            <button class="social-btn facebook" onclick="loginWithFacebook()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" width="20">
-                تسجيل الدخول عبر Facebook
-            </button>
+            <h1 style="color:#e63946; font-size: 40px;">VROOM 🏎️</h1>
+            <p style="margin: 15px 0 25px;">مرحباً بك في Yak Zone</p>
+            <button onclick="startApp()" style="background:#e63946; color:white; border:none; padding:15px 30px; border-radius:10px; cursor:pointer;">دخول سريع</button>
         </div>
     </div>
 
-    <div id="main-screen" class="screen" style="display:none;">
+    <div id="main-screen">
         <header>
-            <div class="user-profile">
-                <img id="user-photo" src="" alt="User">
-                <span id="display-name"></span>
-            </div>
-            <button onclick="logout()" class="mini-btn">خروج</button>
+            <span style="font-weight: bold; color: #e63946;">👤 ضيف VROOM</span>
+            <button onclick="location.reload()" style="background:none; border:none; color:#888; cursor:pointer;">خروج</button>
         </header>
-
-        <div class="chat-area" id="chat-box"></div>
-
-        <div class="input-bar">
-            <input type="text" id="user-in" placeholder="اسأل VROOM الميكانيكي...">
-            <button class="send-btn" onclick="sendMessage()">🚀</button>
+        <div id="chat-box"></div>
+        <div class="action-bar">
+            <input type="text" id="user-in" placeholder="اسأل ميكانيكي الجلفة...">
+            <button class="btn" onclick="sendMessage()">🚀</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        const API_KEY = "AIzaSyCW1Y4DZIEdlRFfVzUz-WpiDfQu68M0Atg";
+        const genAI = new GoogleGenerativeAI(API_KEY);
+
+        window.startApp = function() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-screen').style.display = 'flex';
+            addMsg("يا هلا بيك! أنا VROOM ميكانيكي الجلفة. واش راهي الطوموبيل اليوم؟", "ai");
+        }
+
+        window.sendMessage = async function() {
+            const input = document.getElementById('user-in');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMsg(text, "user");
+            input.value = "";
+            const loading = addMsg("VROOM يحلل العطل... ⚡", "ai");
+
+            try {
+                // استخدام المكتبة مباشرة يحل مشاكل الروابط والأخطاء
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const prompt = "أنت ميكانيكي خبير من الجلفة بالجزائر، أجب بلهجة جزائرية تقنية: " + text;
+                
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                loading.innerText = response.text();
+            } catch (e) {
+                console.error(e);
+                loading.innerText = "كاين مشكلة في الاتصال بمخ VROOM. تأكد من الإنترنت أو ارفع الموقع على Netlify.";
+            }
+        }
+
+        function addMsg(t, c) {
+            const chatBox = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `msg ${c}`;
+            div.innerText = t;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return div;
+        }
+    </script>
 </body>
 </html>
