@@ -287,3 +287,21 @@ window.onload = async () => {
         document.getElementById('colorPicker').value = savedColor;
     }
 };
+function filterCurrencies() {
+    // 1. الحصول على النص الذي كتبه المستخدم
+    let input = document.getElementById('currencySearch').value.toUpperCase();
+    
+    // 2. الحصول على القائمة المنسدلة (الـ Select)
+    let select = document.querySelector("select"); // تأكد من استخدام الـ ID الصحيح للـ select عندك
+    let options = select.getElementsByTagName("option");
+
+    // 3. المرور على كل الخيارات وإخفاء غير المطابق
+    for (let i = 0; i < options.length; i++) {
+        let txtValue = options[i].textContent || options[i].innerText;
+        if (txtValue.toUpperCase().indexOf(input) > -1) {
+            options[i].style.display = ""; // إظهار
+        } else {
+            options[i].style.display = "none"; // إخفاء
+        }
+    }
+}
