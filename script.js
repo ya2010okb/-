@@ -159,35 +159,18 @@ const countryMap = {
     "XPF": { ar: "فرنك بولينيزي", en: "CFP - Franc", fr: "Franc CFP" },
     "ZMW": { ar: "زامبيا - كواشا", en: "Zambia - Kwacha", fr: "Zambie - Kwacha" },
     "ZWL": { ar: "زيمبابوي - دولار", en: "Zimbabwe - Dollar", fr: "Zimbabwe - Dollar" }
-};
+};/* 1. تعريف النصوص بـ 3 لغات */
 const labels = {
-    ar: { title: "محول العملات", amt: "المبلغ", from: "من", to: "إلى", set: "الإعدادات", lang: "اللغة", theme: "المظهر", close: "إغلاق", search: "ابحث هنا..." },
-    en: { title: "Converter", amt: "Amount", from: "From", to: "To", set: "Settings", lang: "Language", theme: "Theme", close: "Close", search: "Search here..." },
-    fr: { title: "Convertisseur", amt: "Montant", from: "De", to: "À", set: "Paramètres", lang: "Langue", theme: "Mode", close: "Fermer", search: "Chercher ici..." }
+    ar: { title: "محول العملات", amt: "المبلغ", from: "من", to: "إلى", set: "الإعدادات", lang: "اللغة", theme: "المظهر", close: "إغلاق", search: "ابحث هنا...", offline: "وضع أوفلاين" },
+    en: { title: "Converter", amt: "Amount", from: "From", to: "To", set: "Settings", lang: "Language", theme: "Theme", close: "Close", search: "Search here...", offline: "Offline Mode" },
+    fr: { title: "Convertisseur", amt: "Montant", from: "De", to: "À", set: "Paramètres", lang: "Langue", theme: "Mode", close: "Fermer", search: "Chercher ici...", offline: "Mode Hors-ligne" }
 };
 
-// 1. تفعيل مكتبة Select2 للعملات فقط (لتجنب تخريب قائمة اللغة)
-function initSelect2(lang) {
-    const t = labels[lang];
-    $('#fromCurrency, #toCurrency').select2({
-        width: '100%',
-        dir: (lang === 'ar') ? 'rtl' : 'ltr',
-        language: {
-            noResults: () => (lang === 'ar' ? "لم يتم العثور على نتائج" : "No results found")
-        }
-    });
+/* 2. ميزات الحفظ التلقائي والعمل بدون إنترنت */
+const saveToLocal = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+const getFromLocal = (key) => JSON.parse(localStorage.getItem(key));
 
-    // تحديث نص البحث (Placeholder) عند الفتح
-    $('#fromCurrency, #toCurrency').on('select2:open', function() {
-        const searchField = document.querySelector('.select2-search__field');
-        if (searchField) searchField.placeholder = t.search;
-    });
-
-    // تنفيذ التحويل عند تغيير العملة من القائمة
-    $('#fromCurrency, #toCurrency').on('change', convert);
-}
-
-// 2. ميزة النسخ عند الضغط على النتيجة
+// ميزة النسخ عند الضغط على النتيجة
 document.getElementById('finalResult').onclick = function() {
     const text = this.innerText;
     if (text === "0.00" || text === "Error") return;
@@ -197,9 +180,27 @@ document.getElementById('finalResult').onclick = function() {
     setTimeout(() => this.style.color = originalColor, 500);
 };
 
-// 3. تغيير اللغة وتحديث الواجهة
+/* 3. تفعيل Select2 للعملات فقط */
+function initSelect2(lang) {
+    const t = labels[lang];
+    $('#fromCurrency, #toCurrency').select2({
+        width: '100%',
+        dir: (lang === 'ar') ? 'rtl' : 'ltr',
+        language: { noResults: () => t.search }
+    });
+
+    $('#fromCurrency, #toCurrency').on('select2:open', function() {
+        const searchField = document.querySelector('.select2-search__field');
+        if (searchField) searchField.placeholder = t.search;
+    });
+
+    $('#fromCurrency, #toCurrency').on('change', convert);
+}
+
+/* 4. تغيير اللغة وتحديث الواجهة */
 async function changeLanguage() {
     const lang = document.getElementById('langSelect').value;
+    localStorage.setItem('userLang', lang); // حفظ اللغة
     document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
     
     const t = labels[lang];
@@ -211,12 +212,11 @@ async function changeLanguage() {
     document.getElementById('setTheme').innerText = t.theme;
     document.querySelector('.close-btn').innerText = t.close;
 
-    // إعادة تشغيل Select2 باللغة والاتجاه الجديد
     initSelect2(lang);
     await loadCurrencies(lang);
 }
 
-// 4. جلب العملات وحفظ آخر اختيار
+/* 5. جلب العملات مع دعم الأوفلاين */
 async function loadCurrencies(lang) {
     const fromS = document.getElementById('fromCurrency');
     const toS = document.getElementById('toCurrency');
@@ -227,27 +227,40 @@ async function loadCurrencies(lang) {
     try {
         const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
         const data = await res.json();
-        const codes = Object.keys(data.rates);
-
-        fromS.innerHTML = ""; toS.innerHTML = "";
-        codes.forEach(code => {
-            const name = (typeof countryMap !== 'undefined' && countryMap[code]) ? countryMap[code][lang] : code;
-            fromS.add(new Option(`${code} | ${name}`, code));
-            toS.add(new Option(`${code} | ${name}`, code));
-        });
-
-        $(fromS).val(oldF).trigger('change.select2');
-        $(toS).val(oldT).trigger('change.select2');
-        convert();
-    } catch (e) { console.error("Error loading currencies"); }
+        saveToLocal('offline_rates', data.rates); // حفظ للعمل أوفلاين
+        
+        updateCurrencyOptions(data.rates, lang, oldF, oldT);
+    } catch (e) {
+        // استخدام البيانات المحفوظة إذا لم يتوفر إنترنت
+        const savedRates = getFromLocal('offline_rates');
+        if (savedRates) updateCurrencyOptions(savedRates, lang, oldF, oldT);
+    }
 }
 
-// 5. دالة التحويل الأساسية
+function updateCurrencyOptions(rates, lang, oldF, oldT) {
+    const fromS = document.getElementById('fromCurrency');
+    const toS = document.getElementById('toCurrency');
+    const codes = Object.keys(rates);
+    
+    fromS.innerHTML = ""; toS.innerHTML = "";
+    codes.forEach(code => {
+        const name = (typeof countryMap !== 'undefined' && countryMap[code]) ? countryMap[code][lang] : code;
+        fromS.add(new Option(`${code} | ${name}`, code));
+        toS.add(new Option(`${code} | ${name}`, code));
+    });
+
+    $(fromS).val(oldF).trigger('change.select2');
+    $(toS).val(oldT).trigger('change.select2');
+    convert();
+}
+
+/* 6. دالة التحويل الذكية */
 async function convert() {
     const amt = document.getElementById('amount').value;
     const f = document.getElementById('fromCurrency').value;
     const t = document.getElementById('toCurrency').value;
     const resultDiv = document.getElementById('finalResult');
+    const lang = document.getElementById('langSelect').value;
 
     localStorage.setItem('lastFrom', f);
     localStorage.setItem('lastTo', t);
@@ -261,18 +274,28 @@ async function convert() {
         const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${f}`);
         const data = await res.json();
         const rate = data.rates[t];
-        
-        const total = (amt * rate).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        
-        document.getElementById('rateInfo').innerText = `1 ${f} = ${rate.toFixed(4)} ${t}`;
-        resultDiv.innerText = total;
-    } catch (e) { resultDiv.innerText = "Error"; }
+        renderResult(amt, rate, f, t);
+    } catch (e) {
+        // تحويل أوفلاين
+        const savedRates = getFromLocal('offline_rates');
+        if (savedRates) {
+            const usdToF = savedRates[f];
+            const usdToT = savedRates[t];
+            const rate = usdToT / usdToF;
+            renderResult(amt, rate, f, t, true);
+        } else {
+            resultDiv.innerText = "Error";
+        }
+    }
 }
 
-// 6. التحكم في الإعدادات والمظهر
+function renderResult(amt, rate, f, t, isOffline = false) {
+    const total = (amt * rate).toLocaleString(undefined, { minimumFractionDigits: 2 });
+    document.getElementById('rateInfo').innerText = `1 ${f} = ${rate.toFixed(4)} ${t} ${isOffline ? '(' + labels[document.getElementById('langSelect').value].offline + ')' : ''}`;
+    document.getElementById('finalResult').innerText = total;
+}
+
+/* 7. التحكم في الإعدادات والمظهر */
 function toggleSettings() {
     const m = document.getElementById('settingsModal');
     m.style.display = (m.style.display === 'block') ? 'none' : 'block';
@@ -294,16 +317,31 @@ function updateAppColor(color) {
 
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
+    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
 }
 
-// 7. التشغيل عند فتح الموقع
+/* 8. التشغيل عند التحميل (استعادة كل شيء) */
 $(document).ready(async function() {
-    // استعادة اللون المفضل
+    // 1. استعادة اللون
     const savedColor = localStorage.getItem('userPrimaryColor');
     if (savedColor) {
         document.documentElement.style.setProperty('--primary', savedColor);
         if(document.getElementById('colorPicker')) document.getElementById('colorPicker').value = savedColor;
     }
-    
+
+    // 2. استعادة المظهر (Dark/Light)
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+
+    // 3. استعادة اللغة
+    const savedLang = localStorage.getItem('userLang') || 'ar';
+    document.getElementById('langSelect').value = savedLang;
+
     await changeLanguage();
 });
+
+// تسجيل الـ Service Worker لـ PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW failed', err));
+    });
+}
