@@ -83,3 +83,17 @@ input:focus, select:focus { box-shadow: 0 0 0 2px var(--primary); }
 
 /* لجعل الأيقونات والأسهم تبدو أفضل في الحقول */
 select { cursor: pointer; appearance: none; }
+#currencySearch {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1a1a1a;
+    color: white;
+    outline: none;
+}
+
+#currencySearch:focus {
+    border-color: #007bff; /* لون أزرق عند الضغط عليه */
+}
