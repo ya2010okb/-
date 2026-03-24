@@ -1,7 +1,6 @@
 {
   "name": "Yak Zone Converter",
   "short_name": "YakZone",
-  "description": "محول عملات احترافي من تطوير يعقوب",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0f172a",
