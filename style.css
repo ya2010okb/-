@@ -120,3 +120,45 @@ select { cursor: pointer; appearance: none; }
 #currencySearch:focus {
     border-color: #007bff; /* لون أزرق عند الضغط عليه */
 }
+/* 1. تغيير لون المستطيل الأساسي والخلفية */
+.select2-container--default .select2-selection--single {
+    background-color: #2c3e50 !important; /* نفس لون مربعات موقعك */
+    border: 1px solid #444 !important;
+    height: 45px !important;
+    border-radius: 8px !important;
+}
+
+/* 2. تغيير لون النص داخل المستطيل ليصبح أبيض */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: white !important;
+    line-height: 45px !important;
+    text-align: right; /* ليتناسب مع اللغة العربية */
+    padding-right: 15px !important;
+}
+
+/* 3. تغيير لون القائمة المنسدلة عند فتحها */
+.select2-dropdown {
+    background-color: #2c3e50 !important;
+    color: white !important;
+    border: 1px solid #444 !important;
+}
+
+/* 4. تغيير لون مربع البحث الصغير بداخل القائمة */
+.select2-search__field {
+    background-color: #1a1a1a !important;
+    color: white !important;
+    border: 1px solid #555 !important;
+    border-radius: 4px !important;
+    text-align: right;
+}
+
+/* 5. تغيير لون السهم الصغير ليظهر بوضوح */
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: white transparent transparent transparent !important;
+}
+
+/* 6. تغيير لون العملة عند تمرير الماوس فوقها (Hover) */
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #00ff88 !important; /* اللون الأخضر الخاص بموقعك */
+    color: #1a1a1a !important;
+}
