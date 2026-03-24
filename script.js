@@ -318,3 +318,22 @@ $(document).ready(function() {
         width: '100%' // ليأخذ عرض الحاوية بالكامل
     });
 });
+$(document).ready(function() {
+    $('select').select2({
+        language: {
+            noResults: function() {
+                return "لم يتم العثور على نتائج";
+            },
+            searching: function() {
+                return "جاري البحث...";
+            }
+        },
+        width: '100%',
+        dir: "rtl" // لتفعيل الاتجاه من اليمين لليسار بشكل صحيح
+    });
+
+    // إضافة الـ Placeholder لمربع البحث يدوياً
+    $('select').on('select2:open', function() {
+        document.querySelector('.select2-search__field').placeholder = "ابحث هنا...";
+    });
+});
