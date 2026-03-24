@@ -36,7 +36,9 @@
                     <i class="fas fa-exchange-alt"></i>
                 </button>
             </div>
-
+<div class="search-box">
+    <input type="text" id="currencySearch" placeholder="ابحث عن عملة... (مثلاً: USD)" onkeyup="filterCurrencies()">
+</div>
             <div class="select-group">
                 <label id="lblTo">إلى</label>
                 <select id="toCurrency" onchange="convert()"></select>
