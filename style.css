@@ -194,3 +194,9 @@ input:focus { box-shadow: 0 0 0 2px var(--primary); }
     transform: scale(0.9) rotate(180deg);
     box-shadow: 0 0 20px var(--primary);
 }
+#rateChart {
+    margin-top: 20px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 10px;
+}
