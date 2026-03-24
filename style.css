@@ -171,3 +171,26 @@ input:focus { box-shadow: 0 0 0 2px var(--primary); }
 .modal-content .select2-container {
     display: none !important;
 }
+/* تأثير ظهور المودال بسلاسة */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* تحسين شكل حقل المبلغ ليظهر بشكل "فخم" */
+#amount {
+    background: linear-gradient(145deg, var(--input), var(--card));
+    border: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Courier New', monospace; /* شكل أرقام احترافي */
+    letter-spacing: 1px;
+}
+
+/* إضافة لمسة مضيئة للزر عند التبديل */
+.swap-button:active {
+    transform: scale(0.9) rotate(180deg);
+    box-shadow: 0 0 20px var(--primary);
+}
