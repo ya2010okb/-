@@ -311,3 +311,10 @@ function filterCurrencies() {
         }
     }
 }
+$(document).ready(function() {
+    $('select').select2({
+        placeholder: "اختر عملة...",
+        allowClear: true,
+        width: '100%' // ليأخذ عرض الحاوية بالكامل
+    });
+});
