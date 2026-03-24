@@ -287,21 +287,27 @@ window.onload = async () => {
         document.getElementById('colorPicker').value = savedColor;
     }
 };
-function filterCurrencies() {
-    // 1. الحصول على النص الذي كتبه المستخدم
-    let input = document.getElementById('currencySearch').value.toUpperCase();
-    
-    // 2. الحصول على القائمة المنسدلة (الـ Select)
-    let select = document.querySelector("select"); // تأكد من استخدام الـ ID الصحيح للـ select عندك
-    let options = select.getElementsByTagName("option");
+const currencySelect = document.getElementById('fromCurrency'); // تأكد من الـ ID الصحيح عندك
+const searchInput = document.getElementById('currencySearch');
 
-    // 3. المرور على كل الخيارات وإخفاء غير المطابق
+// إظهار مربع البحث عند الضغط على القائمة
+currencySelect.addEventListener('mousedown', function(e) {
+    // نمنع القائمة الأصلية من الفتح فوراً لنظهر البحث أولاً
+    searchInput.style.display = 'block';
+    searchInput.focus(); // وضع المؤشر داخل مربع البحث فوراً
+});
+
+// دالة الفلترة (نفس التي شرحتها لك سابقاً)
+function filterCurrencies() {
+    let filter = searchInput.value.toUpperCase();
+    let options = currencySelect.options;
+    
     for (let i = 0; i < options.length; i++) {
-        let txtValue = options[i].textContent || options[i].innerText;
-        if (txtValue.toUpperCase().indexOf(input) > -1) {
-            options[i].style.display = ""; // إظهار
+        let txtValue = options[i].text;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            options[i].style.display = "";
         } else {
-            options[i].style.display = "none"; // إخفاء
+            options[i].style.display = "none";
         }
     }
 }
