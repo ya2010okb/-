@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="mainHtml">
 <head>
+    <title>Yak Zone | محول عملات احترافي</title>
+    <meta name="description" content="تطبيق Yak Zone لتحويل العملات بأسعار صرف حية ودقيقة. واجهة سهلة وسريعة تدعم العربية والإنجليزية.">
+    <meta property="og:title" content="Yak Zone">
+    <meta property="og:description" content="أسرع محول عملات رقمي">
+    <meta property="og:site_name" content="Yak Zone">
+
+    <link rel="icon" type="image/png" href="cropped_circle_image.png">
+    <link rel="apple-touch-icon" href="cropped_circle_image.png">
+    
     <meta name="theme-color" id="themeColorTag" content="#a855f7">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YakZone</title>
-  <link rel="icon" type="image/png" href="cropped_circle_image.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -41,9 +48,11 @@
                     <i class="fas fa-exchange-alt"></i>
                 </button>
             </div>
-<div class="search-container">
-    <input type="text" id="currencySearch" placeholder="🔍 ابحث عن عملة..." onkeyup="filterCurrencies()" style="display: none;">
-</div>
+            
+            <div class="search-container">
+                <input type="text" id="currencySearch" placeholder="🔍 ابحث عن عملة..." onkeyup="filterCurrencies()" style="display: none;">
+            </div>
+
             <div class="select-group">
                 <label id="lblTo">إلى</label>
                 <select id="toCurrency" onchange="convert()"></select>
@@ -71,9 +80,9 @@
                 </select>
             </div>
             <div class="set-item">
-    <span id="setCustomColor">لون التطبيق:</span>
-    <input type="color" id="colorPicker" value="#a855f7" onchange="updateAppColor(this.value)" style="width: 50px; height: 30px; padding: 0; border-radius: 5px; cursor: pointer;">
-</div>
+                <span id="setCustomColor">لون التطبيق:</span>
+                <input type="color" id="colorPicker" value="#a855f7" onchange="updateAppColor(this.value)" style="width: 50px; height: 30px; padding: 0; border-radius: 5px; cursor: pointer;">
+            </div>
 
             <div class="set-item">
                 <span id="setTheme">المظهر:</span>
@@ -86,7 +95,6 @@
         </div>
     </div>
 </div>
-
 
 <script src="script.js"></script>
 </body>
